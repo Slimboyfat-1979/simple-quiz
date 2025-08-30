@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@3.4.0"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <div>
+        <p class="score">Score: {{score}}</p>
+        <p class="question-label">Question</p>
+        <p class="question-text">{{question}}</p>
+        <p class="timer">{{timer}}</p>
+        <div class="answer-section">
+          <label for="">Your Answer</label>
+          <input v-model="answer" style="display: block" type="text" />
+        </div>
+      </div>
+    </div>
+    <script>
+      const { createApp, ref, computed } = Vue;
+      const App = {
+        setup() {
+          let score = ref(0);
+          let answer = ref(null);
+          let timer = ref(10);
+
+          let currentQuestion = ref(0);
+
+          const questionSet = [
+            {
+              id: 1,
+              question: "Which planet is known as the Red Planet?",
+              answer: "Mars",
+            },
+            {
+              id: 2,
+              question: "Who wrote the play 'Romeo and Juliet'?",
+              answer: "Shakespeare",
+            },
+            {
+              id: 3,
+              question: "What is the capital city of France?",
+              answer: "Paris",
+            },
+            {
+              id: 4,
+              question: "Which element has the chemical symbol 'O'?",
+              answer: "Oxygen",
+            },
+            {
+              id: 5,
+              question: "Who painted the Mona Lisa?",
+              answer: "Leonardo da Vinci",
+            },
+            {
+              id: 6,
+              question: "What is the largest planet in our solar system?",
+              answer: "Jupiter",
+            },
+            {
+              id: 7,
+              question: "Which language is primarily spoken in Brazil?",
+              answer: "Portuguese",
+            },
+            {
+              id: 8,
+              question:
+                "What is the boiling point of water at sea level in Celsius?",
+              answer: "100",
+            },
+            {
+              id: 9,
+              question: "Which organ in the human body pumps blood?",
+              answer: "Heart",
+            },
+            {
+              id: 10,
+              question: "On which continent is the Sahara Desert located?",
+              answer: "Africa",
+            },
+          ];
+          let question = computed(
+            () => questionSet[currentQuestion.value].question
+          );
+
+          setInterval(() => {
+            timer.value--;
+          }, 1000);
+
+          setInterval(() => {
+            if (!answer.value) {
+              currentQuestion.value++;
+              timer.value = 10;
+            } else {
+              if (answer.value === questionSet[currentQuestion.value].answer) {
+                score.value++;
+                answer.value = "";
+                currentQuestion.value++;
+              } else {
+                currentQuestion.value++;
+              }
+            }
+          }, 10000);
+
+          return { score, currentQuestion, answer, question, timer };
+        },
+      };
+      createApp(App).mount("#app");
+    </script>
+  </body>
+</html>
+
+<style scoped>
+  .timer {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ff3c3c;
+    background-color: #1e1e1e;
+    padding: 0.5em 1em;
+    border-radius: 8px;
+    width: fit-content;
+    margin: 1em auto;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(255, 60, 60, 0.5);
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 10px rgba(255, 60, 60, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(255, 60, 60, 0.8);
+    }
+    100% {
+      box-shadow: 0 0 10px rgba(255, 60, 60, 0.5);
+    }
+  }
+
+  .score {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2ecc71;
+    margin-bottom: 1em;
+    text-align: center;
+  }
+
+  .question-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #3498db;
+    margin-bottom: 0.5em;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .question-text {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #333;
+    background-color: #f9f9f9;
+    padding: 1em;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  .answer-section {
+    margin: 2em auto;
+    max-width: 400px;
+    text-align: left;
+  }
+
+  .answer-section label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.5em;
+  }
+
+  .answer-section input[type="text"] {
+    width: 100%;
+    padding: 0.75em 1em;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .answer-section input[type="text"]:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    outline: none;
+  }
+</style>
