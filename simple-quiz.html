@@ -17,6 +17,9 @@
           <label for="">Your Answer</label>
           <input v-model="answer" style="display: block" type="text" />
         </div>
+        <p class="score-message" v-if="gameEnd">
+          Congratulations your score is {{score}}
+        </p>
       </div>
     </div>
     <script>
@@ -26,6 +29,7 @@
           let score = ref(0);
           let answer = ref(null);
           let timer = ref(10);
+          let gameEnd = ref(false);
 
           let currentQuestion = ref(0);
 
@@ -37,75 +41,86 @@
             },
             {
               id: 2,
-              question: "Who wrote the play 'Romeo and Juliet'?",
-              answer: "Shakespeare",
+              question: "What is the largest ocean on Earth?",
+              answer: "Pacific",
             },
             {
               id: 3,
+              question: "Who wrote 'Romeo and Juliet'?",
+              answer: "Shakespeare",
+            },
+            {
+              id: 4,
+              question: "What is the chemical symbol for gold?",
+              answer: "Au",
+            },
+            {
+              id: 5,
+              question: "Which country is known as the Land of the Rising Sun?",
+              answer: "Japan",
+            },
+            {
+              id: 6,
+              question: "How many continents are there on Earth?",
+              answer: "7",
+            },
+            {
+              id: 7,
               question: "What is the capital city of France?",
               answer: "Paris",
             },
             {
-              id: 4,
-              question: "Which element has the chemical symbol 'O'?",
-              answer: "Oxygen",
-            },
-            {
-              id: 5,
-              question: "Who painted the Mona Lisa?",
-              answer: "Leonardo da Vinci",
-            },
-            {
-              id: 6,
-              question: "What is the largest planet in our solar system?",
-              answer: "Jupiter",
-            },
-            {
-              id: 7,
-              question: "Which language is primarily spoken in Brazil?",
-              answer: "Portuguese",
-            },
-            {
               id: 8,
-              question:
-                "What is the boiling point of water at sea level in Celsius?",
-              answer: "100",
+              question: "What gas do plants absorb from the atmosphere?",
+              answer: "Carbon dioxide",
             },
             {
               id: 9,
-              question: "Which organ in the human body pumps blood?",
-              answer: "Heart",
+              question: "Who painted the Mona Lisa?",
+              answer: "Da Vinci",
             },
             {
               id: 10,
-              question: "On which continent is the Sahara Desert located?",
-              answer: "Africa",
+              question: "What is the smallest prime number?",
+              answer: "2",
             },
           ];
-          let question = computed(
-            () => questionSet[currentQuestion.value].question
-          );
 
-          setInterval(() => {
+          let question = computed(() => {
+            if (currentQuestion.value === questionSet.length) {
+              clearInterval(gameInterval);
+              clearInterval(timerInterval);
+              timer.value = 0;
+              gameEnd.value = true;
+              return;
+            } else {
+              return questionSet[currentQuestion.value].question;
+            }
+          });
+
+          let timerInterval = setInterval(() => {
             timer.value--;
           }, 1000);
 
-          setInterval(() => {
+          let gameInterval = setInterval(() => {
             if (!answer.value) {
               currentQuestion.value++;
               timer.value = 10;
             } else {
               if (answer.value === questionSet[currentQuestion.value].answer) {
+                timer.value = 10;
                 score.value++;
                 answer.value = "";
                 currentQuestion.value++;
               } else {
+                timer.value = 10;
+                answer.value = "";
                 currentQuestion.value++;
               }
             }
           }, 10000);
 
-          return { score, currentQuestion, answer, question, timer };
+          return { score, currentQuestion, answer, question, timer, gameEnd };
         },
       };
       createApp(App).mount("#app");
@@ -198,5 +213,33 @@
     border-color: #3498db;
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
     outline: none;
+  }
+
+  .score-message {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2ecc71;
+    background: #eafff3;
+    border: 2px solid #2ecc71;
+    border-radius: 10px;
+    padding: 1em 2em;
+    margin: 2em auto;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(46, 204, 113, 0.15);
+    animation: pop 0.5s;
+  }
+
+  @keyframes pop {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    80% {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 </style>
